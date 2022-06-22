@@ -1,11 +1,16 @@
-window.addEventListener('load', async () => {
+window.addEventListener('load', async () => { 
+	// 'load' : 페이지를 비롯한 이미지 등의 자원 전부가 모두 불러와졌을 때 winodw 객체에서 실행
+	// async() : 비동기 처리
+
 	// set the provider you want from Web3.providers
 	web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:8545"));
 	console.log('using web3 provider');
 
 	const accounts = await web3.eth.getAccounts();
 	web3.eth.defaultAccount = accounts[0];
+	var balance = web3.eth.getBalance(accounts[0]);
 	console.log('Set the default account: ', accounts[0]);
+	console.log('Default Account Balance : ', balance);
 
 	var StudentABI = [
 			{
@@ -62,13 +67,9 @@ window.addEventListener('load', async () => {
 });
 
 function refresh() {
-    StudentDetails.methods.getStudent().call((error, result) => {
-		if(result){
-			console.log("hi");
-		}
-		else{
-			console.log("no");
-		}
+    StudentDetails.methods.getStudent().call((error, result) => { 
+		// call : getStudent 메소드가 컨트랙트에서 값의 변경이 없는 view이기 때문에 call 사용
+		
         if (!error) {
             $("#instructor").html(
                 'Enrolled ' + result[0] + ' ' + result[1] + ' with DOB ' + result[2]);
