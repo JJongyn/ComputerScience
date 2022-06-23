@@ -3,7 +3,7 @@ window.addEventListener('load', async () => {
 	// async() : 비동기 처리
 
 	// set the provider you want from Web3.providers
-	web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:8545"));
+	web3 = new Web3(new Web3.providers.WebsocketProvider("ws://localhost:8545"));
 	console.log('using web3 provider');
 
 	const accounts = await web3.eth.getAccounts();
@@ -13,55 +13,110 @@ window.addEventListener('load', async () => {
 	console.log('Default Account Balance : ', balance);
 
 	var StudentABI = [
-			{
-				"constant": false,
-				"inputs": [
-					{
-						"name": "fname",
-						"type": "string"
-					},
-					{
-						"name": "lname",
-						"type": "string"
-					},
-					{
-						"name": "dob",
-						"type": "string"
-					}
-				],
-				"name": "setStudent",
-				"outputs": [],
-				"payable": false,
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"constant": true,
-				"inputs": [],
-				"name": "getStudent",
-				"outputs": [
-					{
-						"name": "",
-						"type": "string"
-					},
-					{
-						"name": "",
-						"type": "string"
-					},
-					{
-						"name": "",
-						"type": "string"
-					}
-				],
-				"payable": false,
-				"stateMutability": "view",
-				"type": "function"
-			}
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "from",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "string",
+					"name": "fname",
+					"type": "string"
+				},
+				{
+					"indexed": false,
+					"internalType": "string",
+					"name": "lname",
+					"type": "string"
+				},
+				{
+					"indexed": false,
+					"internalType": "string",
+					"name": "bob",
+					"type": "string"
+				}
+			],
+			"name": "Added",
+			"type": "event"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "string",
+					"name": "fname",
+					"type": "string"
+				},
+				{
+					"internalType": "string",
+					"name": "lname",
+					"type": "string"
+				},
+				{
+					"internalType": "string",
+					"name": "dob",
+					"type": "string"
+				}
+			],
+			"name": "setStudent",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "getStudent",
+			"outputs": [
+				{
+					"internalType": "string",
+					"name": "",
+					"type": "string"
+				},
+				{
+					"internalType": "string",
+					"name": "",
+					"type": "string"
+				},
+				{
+					"internalType": "string",
+					"name": "",
+					"type": "string"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		}
 	];
 	console.log('1');
 	
 	//StudentDetails = new web3.eth.Contract(StudentABI, '0xbf8ff36b51c077a044669c3e1c947664807252f1');
-	StudentDetails = new web3.eth.Contract(StudentABI, '0x184f164E15971Aa96517Ce610d052969F613178e'); // Set your Contract address
+	StudentDetails = new web3.eth.Contract(StudentABI, '0x58d02dBe0F4cB9057A7B29f2e0A76D02c5781abc'); // Set your Contract address
+
+	StudentDetails.events.Added({}, function(error, event) {
+		if(!error) {
+			refresh();
+		}
+		else{
+			console.log(error);
+		}
+
+	});
+
+	// 과거의 event 불러오기
+	StudentDetails.getPastEvents('Added', {fromBlock:5, toBlock:'latest'},
+		function(error, events){
+			if(!error){
+				events.forEach(event => console.log(event.returnValues));
+			}
+			else{
+				console.log(error);
+			}
+		}
+	);
 
 	refresh();
 });
