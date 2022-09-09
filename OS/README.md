@@ -187,7 +187,7 @@
 * HRRN(High-Response-Ratio-Next)
 
     프로세스의 대기 시간을 고려(Aging concepts)하여 기회를 제공한다. 스케줄링의 기준으로 Response ratio가 높은 프로세스를 우선으로 한다. 
-    Response ratio = (WT + BT) / BT 
+    **Response ratio = (WT + BT) / BT**
 
 
 * MLQ(Multi-Level-Queue)
